@@ -1,0 +1,3 @@
+# RFC 9977 sec. 7: sinalizar quando voltar a buscar (dados mudam raramente)
+/prefixlen.csv
+  Cache-Control: public, max-age=604800

@@ -1,0 +1,2 @@
+# RFC 9977: prefixlen tem de manter CRLF; nao normalizar
+public/prefixlen.csv -text

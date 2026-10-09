@@ -30,7 +30,17 @@ Não há build, testes nem lint.
 - Prefixos sem sobreposição, em notação de rede estrita (`ipaddress.ip_network(p, strict=True)`).
 - NÃO incluir `192.67.35.12/31` (sub-rede da HYEHOST, não é do utilizador). Um futuro bloco IPv4 próprio, anunciado pelo AS213367, entra com `PT`.
 
-## Publicação do geofeed (fora do repo)
+## Regras do `prefixlen.csv` (RFC 9977)
+
+- Formato: `prefix,end-site prefix length,end-sites` — exatamente 2 vírgulas; `1` no 3.º campo = sem CGN/proxy; `prefix,,` = não divulgar.
+- **Linhas obrigatoriamente em CRLF** (ao contrário do geofeed). `.gitattributes` marca o ficheiro `-text` para o git não normalizar; editar preservando `\r\n`.
+- Uma entrada por prefixo (duplicados são erro); sub-prefixos permitidos (longest-prefix match).
+- Atual: os dois /48 com end-sites `/64`.
+- `public/_headers` dá `Cache-Control: public, max-age=604800` ao `/prefixlen.csv` (sec. 7: sinalizar refetch; dados mudam raramente). `_headers` não é servido.
+
+## Publicação do geofeed e prefixlen (fora do repo)
+
+Na RIPE DB o prefixlen usa o atributo `prefixlen:` no `inet6num` (já implementado pela RIPE NCC), com o URL `https://ispconfig.zulcao.com.br/prefixlen.csv`. Vai no mesmo pedido aos LIR que o `geofeed:`.
 
 O atributo `geofeed:` **não é válido em `aut-num`** — só em `inetnum`/`inet6num` (RFC 9632). Os /48 não têm objeto próprio na RIPE DB; estão dentro dos blocos dos LIR patrocinadores, por isso a referência ao URL exige ticket a cada um:
 

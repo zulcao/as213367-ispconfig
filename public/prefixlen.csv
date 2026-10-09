@@ -1,0 +1,4 @@
+# prefixlen AS213367 (RFC 9977)
+# prefix,end-site prefix length,end-sites (CGN/proxy)
+2a06:b700:1003::/48,64,1
+2a0f:6280:1057::/48,64,1

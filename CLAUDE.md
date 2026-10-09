@@ -39,4 +39,4 @@ O atributo `geofeed:` **não é válido em `aut-num`** — só em `inetnum`/`ine
 
 ## Repositório
 
-Remote: `git@github.com:zulcao/as213367-geofeed.git` (público, org `zulcao`; a conta `gh` é `CattleWhisper`).
+Remote: `git@github.com:zulcao/as213367-ispconfig.git` (público, org `zulcao`; a conta `gh` é `CattleWhisper`).

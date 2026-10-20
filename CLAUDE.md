@@ -28,14 +28,17 @@ Não há build, testes nem lint.
 - Só prefixos **anunciados pelo AS213367**. Confirmar antes de acrescentar:
   `curl -s "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS213367"`
 - Prefixos sem sobreposição, em notação de rede estrita (`ipaddress.ip_network(p, strict=True)`).
-- NÃO incluir `192.67.35.12/31` (sub-rede da HYEHOST, não é do utilizador). Um futuro bloco IPv4 próprio, anunciado pelo AS213367, entra com `PT`.
+  Exceção: `187.7.200.0/24` é do utilizador (inetnum `net-IGOR-BISSOLI-ZULCAO`, via IPBNB) e foi incluído a pedido dele antes de ser anunciado (sem ROA em 2026-10-20).
+- NÃO incluir `192.67.35.12/31` (sub-rede da HYEHOST, não é do utilizador). O `5.231.99.0/24` (inetnum da GHOSTnet) é alugado pelo utilizador e entra.
+- Cada prefixo anunciado está dividido em duas metades (/48 → 2×/49, /24 → 2×/25): a **primeira metade** é `PT,PT-11,Alverca do Ribatejo`, a **segunda** `BR,BR-ES,Vitória`. Ao acrescentar um prefixo novo, seguir a mesma regra.
+- Geofeed e prefixlen cobrem os mesmos prefixos anunciados, mas não precisam da mesma granularidade: o split PT/BR é só do geofeed.
 
 ## Regras do `prefixlen.csv` (RFC 9977)
 
 - Formato: `prefix,end-site prefix length,end-sites` — exatamente 2 vírgulas; `1` no 3.º campo = sem CGN/proxy; `prefix,,` = não divulgar.
 - **Linhas obrigatoriamente em CRLF** (ao contrário do geofeed). `.gitattributes` marca o ficheiro `-text` para o git não normalizar; editar preservando `\r\n`.
 - Uma entrada por prefixo (duplicados são erro); sub-prefixos permitidos (longest-prefix match).
-- Atual: os dois /48 com end-sites `/64`.
+- Atual: um prefixo anunciado por linha, sem split — /48 IPv6 com end-sites `/64` (`/48,64,1`), /24 IPv4 com end-sites `/25` (`/24,25,1`, uma metade PT e outra BR).
 - `public/_headers` dá `Cache-Control: public, max-age=604800` ao `/prefixlen.csv` (sec. 7: sinalizar refetch; dados mudam raramente). `_headers` não é servido.
 
 ## Publicação do geofeed e prefixlen (fora do repo)
@@ -46,6 +49,8 @@ O atributo `geofeed:` **não é válido em `aut-num`** — só em `inetnum`/`ine
 
 - `2a06:b700:1003::/48` ⊂ `2a06:b700::/29` (BR-MIRALIUMRE, `miraliumre-mnt`)
 - `2a0f:6280:1057::/48` ⊂ `2a0f:6280::/30` (HYEHOST, `HYEHOST-MNT`)
+- `5.231.99.0/24` — inetnum próprio, `GHOSTNET-MNT` (GHOSTnet GmbH); sem `geofeed:`.
+- `187.7.200.0/24` — inetnum próprio, `IPBNB-MNT`; já tem `geofeed:` a apontar para a IPBNB (`api.ipbnb.com`), que prevalece sobre o nosso enquanto não for trocado.
 
 ## Repositório
 

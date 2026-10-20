@@ -1,4 +1,10 @@
 # Geofeed AS213367 (RFC 8805)
 # prefix,country,region,city,postal
-2a06:b700:1003::/48,PT,PT-11,Lisboa,
-2a0f:6280:1057::/48,PT,PT-11,Lisboa,
+2a06:b700:1003::/49,PT,PT-11,Alverca do Ribatejo,
+2a06:b700:1003:8000::/49,BR,BR-ES,Vitória,
+2a0f:6280:1057::/49,PT,PT-11,Alverca do Ribatejo,
+2a0f:6280:1057:8000::/49,BR,BR-ES,Vitória,
+5.231.99.0/25,PT,PT-11,Alverca do Ribatejo,
+5.231.99.128/25,BR,BR-ES,Vitória,
+187.7.200.0/25,PT,PT-11,Alverca do Ribatejo,
+187.7.200.128/25,BR,BR-ES,Vitória,

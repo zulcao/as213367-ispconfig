@@ -4,6 +4,8 @@
 2a06:b700:1003:8000::/49,BR,BR-ES,Vitória,
 2a0f:6280:1057::/49,PT,PT-11,Alverca do Ribatejo,
 2a0f:6280:1057:8000::/49,BR,BR-ES,Vitória,
+2a0f:6280:1f00::/41,PT,PT-11,Alverca do Ribatejo,
+2a0f:6280:1f80::/41,BR,BR-ES,Vitória,
 5.231.99.0/25,PT,PT-11,Alverca do Ribatejo,
 5.231.99.128/25,BR,BR-ES,Vitória,
 187.7.200.0/25,PT,PT-11,Alverca do Ribatejo,

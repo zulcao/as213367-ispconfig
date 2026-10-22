@@ -39,7 +39,8 @@ Não há build, testes nem lint.
 - Formato: `prefix,end-site prefix length,end-sites` — exatamente 2 vírgulas; `1` no 3.º campo = sem CGN/proxy; `prefix,,` = não divulgar.
 - **Linhas obrigatoriamente em CRLF** (ao contrário do geofeed). `.gitattributes` marca o ficheiro `-text` para o git não normalizar; editar preservando `\r\n`.
 - Uma entrada por prefixo (duplicados são erro); sub-prefixos permitidos (longest-prefix match).
-- Atual: um prefixo anunciado por linha, sem split. End-site = **sítio** (o utilizador não tem clientes; tem dois sítios, PT e BR), por isso o tamanho é o de cada metade do geofeed: `/48,49,1`, `/40,41,1`, `/24,25,1`.
+- Atual: um prefixo anunciado por linha, sem split. End-site = **sítio** (o utilizador não tem clientes; tem dois sítios, PT e BR), por isso o tamanho é o de cada metade do geofeed: `/48,49,1`, `/24,25,1`. Exceção: o `2a0f:6280:1f00::/40` tem inet6num /41 próprios com `prefixlen:`, por isso entra como `/41,41,1` (duas linhas).
+- **Regra RFC 9632/9977:** o consumidor usa o inet(6)num **mais específico** que referencia o ficheiro e ignora linhas fora do range dele. Cada linha (geofeed e prefixlen) tem de caber dentro desse objeto — se o LIR criar objetos mais pequenos, partir as linhas na mesma granularidade.
 - `public/_headers` dá `Cache-Control: public, max-age=604800` ao `/prefixlen.csv` (sec. 7: sinalizar refetch; dados mudam raramente). `_headers` não é servido.
 
 ## Publicação do geofeed e prefixlen (fora do repo)
@@ -55,9 +56,9 @@ Estado em 2026-10-22 (maintainer do utilizador: `IGBZU-mnt`; org: `ORG-IBZ2-RIPE
 - `2a0c:9a40:e180::/48` (`ASSIGNED`, PT+BR) — iFog (`ch-ifog-1-mnt`) + `IGBZU-mnt`; geofeed e prefixlen nossos. ✔
 - `2a0f:6280:1f00::/40` (`ALLOCATED-BY-LIR`) + `/41` PT e `/41` BR (`ASSIGNED`) — HYEHOST-MNT; geofeed e prefixlen nossos nos três. ✔
 - `2a0f:6280:1057::/48` (`ASSIGNED`, PT) — HYEHOST-MNT; geofeed e prefixlen nossos. ✔
-- `2a06:b700:1003::/48` (`ASSIGNED`, PT, netname `Bissoli`, sem org) — miraliumre-mnt; **sem** geofeed nem prefixlen.
+- `2a06:b700:1003::/48` (`ASSIGNED`, PT, netname `Bissoli`, sem org) — miraliumre-mnt; **sem** geofeed nem prefixlen. **Em descontinuação** (2026-10-22): o utilizador migrou para o `2a0c:9a40:e180::/48` (iFog). Não pedir geofeed à Miralium; retirar as linhas do geofeed/prefixlen quando deixar de ser anunciado.
 - `5.231.99.0/24` (a sair ~2026-11-10) — GHOSTnet criou 256 inetnum /32 (`.0–.127` PT, `.128–.255` BR, org `ORG-GG3-RIPE`); geofeed nosso, **sem** prefixlen.
-- `187.7.200.0/24` (`ASSIGNED PA`, PT, org já `ORG-IBZ2-RIPE`) — IPBNB-MNT; geofeed ainda da IPBNB (`api.ipbnb.com`), **sem** prefixlen; ticket preparado (ROA, SUB-ALLOCATED PA + mnt-lower, ou 2×/25).
+- `187.7.200.0/24` (`ASSIGNED PA`, PT, org já `ORG-IBZ2-RIPE`) — IPBNB-MNT; geofeed ainda da IPBNB (`api.ipbnb.com`), **sem** prefixlen; ROA (AS213367, ml24) e org já feitos; ticket **enviado** em 2026-10-22, sem resposta ainda (geofeed nosso + prefixlen, SUB-ALLOCATED PA + mnt-lower, ou 2×/25).
 
 ## Repositório
 

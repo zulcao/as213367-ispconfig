@@ -28,7 +28,7 @@ Não há build, testes nem lint.
 - Só prefixos **anunciados pelo AS213367**. Confirmar antes de acrescentar:
   `curl -s "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS213367"`
 - Prefixos sem sobreposição, em notação de rede estrita (`ipaddress.ip_network(p, strict=True)`).
-  Exceção: blocos atribuídos ao utilizador (inet(6)num com `org: ORG-IBZ2-RIPE`) entram a pedido dele antes de serem anunciados. Em 2026-10-22 ainda não anunciados: `2a0f:6280:1f00::/40`, `2a0c:9a40:e180::/48` (ambos com ROA e route6) e `2001:678:13a0::/48` (PI, **sem** ROA nem route6).
+  Exceção: blocos atribuídos ao utilizador (inet(6)num com `org: ORG-IBZ2-RIPE`) entram a pedido dele antes de serem anunciados. Em 2026-10-22 ainda não anunciados: `2a0f:6280:1f00::/40`, `2a0c:9a40:e180::/48` e `2001:678:13a0::/48` (todos já com ROA e route6).
 - NÃO incluir `192.67.35.12/31` (sub-rede da HYEHOST, não é do utilizador).
 - `5.231.99.0/24` (GHOSTnet): lease de 1 mês **já cancelado**; em uso só até ~2026-11-10 (lease termina ~2026-11-13). Retirar as linhas do geofeed e do prefixlen quando o utilizador deixar de o anunciar — não publicar dados sobre espaço que já não é dele. Não vale a pena corrigir os inetnum por IP (limitação do painel GHOSTnet). O bloco IPv4 a manter é o `187.7.200.0/24`.
 - Cada prefixo anunciado está dividido em duas metades (/48 → 2×/49, /40 → 2×/41, /24 → 2×/25): a **primeira metade** é `PT,PT-11,Alverca do Ribatejo`, a **segunda** `BR,BR-ES,Vitória`. Ao acrescentar um prefixo novo, seguir a mesma regra.
@@ -51,7 +51,7 @@ Para consultar, incluir o objeto exato e os mais específicos — **não** usar 
 
 Estado em 2026-10-22 (maintainer do utilizador: `IGBZU-mnt`; org: `ORG-IBZ2-RIPE`):
 
-- `2001:678:13a0::/48` (`ASSIGNED PI`, PT+BR) — `RIPE-NCC-END-MNT` + `IGBZU-mnt` (do utilizador); geofeed e prefixlen nossos. ✔ ROA e route6 por criar (PI: o utilizador cria-os, via LIR patrocinador / RPKI dashboard).
+- `2001:678:13a0::/48` (`ASSIGNED PI`, PT+BR) — `RIPE-NCC-END-MNT` + `IGBZU-mnt` (do utilizador); geofeed e prefixlen nossos. ✔ ROA (AS213367, maxLength 48) e route6 (`mnt-by: IGBZU-mnt`) criados pelo utilizador em 2026-10-22.
 - `2a0c:9a40:e180::/48` (`ASSIGNED`, PT+BR) — iFog (`ch-ifog-1-mnt`) + `IGBZU-mnt`; geofeed e prefixlen nossos. ✔
 - `2a0f:6280:1f00::/40` (`ALLOCATED-BY-LIR`) + `/41` PT e `/41` BR (`ASSIGNED`) — HYEHOST-MNT; geofeed e prefixlen nossos nos três. ✔
 - `2a0f:6280:1057::/48` (`ASSIGNED`, PT) — HYEHOST-MNT; geofeed e prefixlen nossos. ✔

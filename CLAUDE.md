@@ -19,6 +19,8 @@ npx wrangler deploy              # publica em https://ispconfig.zulcao.com.br/ge
 
 O domínio é um Custom Domain (`routes[].custom_domain` no `wrangler.jsonc`): a Cloudflare cria o registo DNS e o certificado no deploy. A zona `zulcao.com.br` está na conta Cloudflare do utilizador. Com `routes` definido, o URL `workers.dev` fica desligado por omissão.
 
+A zona tem o Browser Integrity Check ligado (bloqueia p.ex. `Python-urllib` com 403/erro 1010). Uma **Configuration Rule** (hostname `ispconfig.zulcao.com.br` → Browser Integrity Check Off) desliga-o só neste host, para os coletores de geofeed/prefixlen não serem bloqueados. Testar: `curl -s -o /dev/null -w '%{http_code}\n' -A "Python-urllib/3.9" https://ispconfig.zulcao.com.br/geofeed.csv` → `200`.
+
 Não há build, testes nem lint.
 
 ## Regras do `geofeed.csv`
@@ -56,7 +58,7 @@ Estado em 2026-10-22 (maintainer do utilizador: `IGBZU-mnt`; org: `ORG-IBZ2-RIPE
 - `2a0c:9a40:e180::/48` (`ASSIGNED`, PT+BR) — iFog (`ch-ifog-1-mnt`) + `IGBZU-mnt`; geofeed e prefixlen nossos. ✔
 - `2a0f:6280:1f00::/40` (`ALLOCATED-BY-LIR`) + `/41` PT e `/41` BR (`ASSIGNED`) — HYEHOST-MNT; geofeed e prefixlen nossos nos três. ✔
 - `2a0f:6280:1057::/48` (`ASSIGNED`, PT) — HYEHOST-MNT; geofeed e prefixlen nossos. ✔
-- `2a06:b700:1003::/48` (`ASSIGNED`, PT, netname `Bissoli`, sem org) — miraliumre-mnt; **sem** geofeed nem prefixlen. **Em descontinuação** (2026-10-22): o utilizador migrou para o `2a0c:9a40:e180::/48` (iFog). Não pedir geofeed à Miralium; retirar as linhas do geofeed/prefixlen quando deixar de ser anunciado.
+- `2a06:b700:1003::/48` (`ASSIGNED`, PT, netname `Bissoli`, sem org) — miraliumre-mnt; **sem** geofeed nem prefixlen. **Em descontinuação**: o utilizador migrou para o `2a0c:9a40:e180::/48` (iFog); o bloco termina a **2026-12-31** (lembrete agendado para 2026-11-30). Não pedir geofeed à Miralium; retirar as linhas do geofeed/prefixlen quando deixar de ser anunciado.
 - `5.231.99.0/24` (a sair ~2026-11-10) — GHOSTnet criou 256 inetnum /32 (`.0–.127` PT, `.128–.255` BR, org `ORG-GG3-RIPE`); geofeed nosso, **sem** prefixlen.
 - `187.7.200.0/24` (`ASSIGNED PA`, PT, org já `ORG-IBZ2-RIPE`) — IPBNB-MNT; geofeed ainda da IPBNB (`api.ipbnb.com`), **sem** prefixlen; ROA (AS213367, ml24) e org já feitos; ticket **enviado** em 2026-10-22, sem resposta ainda (geofeed nosso + prefixlen, SUB-ALLOCATED PA + mnt-lower, ou 2×/25).
 

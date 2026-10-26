@@ -41,7 +41,7 @@ Não há build, testes nem lint.
 - Formato: `prefix,end-site prefix length,end-sites` — exatamente 2 vírgulas; `1` no 3.º campo = sem CGN/proxy; `prefix,,` = não divulgar.
 - **Linhas obrigatoriamente em CRLF** (ao contrário do geofeed). `.gitattributes` marca o ficheiro `-text` para o git não normalizar; editar preservando `\r\n`.
 - Uma entrada por prefixo (duplicados são erro); sub-prefixos permitidos (longest-prefix match).
-- Atual: um prefixo anunciado por linha, sem split. End-site = **sítio** (o utilizador não tem clientes; tem dois sítios, PT e BR), por isso o tamanho é o de cada metade do geofeed: `/48,49,1`, `/24,25,1`. Exceção: o `2a0f:6280:1f00::/40` tem inet6num /41 próprios com `prefixlen:`, por isso entra como `/41,41,1` (duas linhas).
+- Atual: um prefixo anunciado por linha, sem split. End-site = **sítio** (o utilizador não tem clientes; tem dois sítios, PT e BR), por isso o tamanho é o de cada metade do geofeed: `/48,49,1`, `/24,25,1`. Exceções: o `2a0f:6280:1f00::/40` e o `187.7.200.0/24` têm inet(6)num próprios por metade com `prefixlen:`, por isso entram como `/41,41,1` e `/25,25,1` (duas linhas cada).
 - **Regra RFC 9632/9977:** o consumidor usa o inet(6)num **mais específico** que referencia o ficheiro e ignora linhas fora do range dele. Cada linha (geofeed e prefixlen) tem de caber dentro desse objeto — se o LIR criar objetos mais pequenos, partir as linhas na mesma granularidade.
 - `public/_headers` dá `Cache-Control: public, max-age=604800` ao `/prefixlen.csv` (sec. 7: sinalizar refetch; dados mudam raramente). `_headers` não é servido.
 
@@ -52,15 +52,29 @@ Os atributos `geofeed:` (RFC 9632) e `prefixlen:` (RFC 9977) existem no `inetnum
 Para consultar, incluir o objeto exato e os mais específicos — **não** usar só `-l` (devolve apenas o menos específico e esconde o exato):
 `curl -s "https://rest.db.ripe.net/search.json?query-string=<prefixo>&type-filter=inet6num&flags=r&flags=B&flags=M"` (repetir sem `flags=M` para o exato).
 
-Estado em 2026-10-22 (maintainer do utilizador: `IGBZU-mnt`; org: `ORG-IBZ2-RIPE`):
+Estado em 2026-10-26 (maintainer do utilizador: `IGBZU-mnt`; org: `ORG-IBZ2-RIPE`):
 
 - `2001:678:13a0::/48` (`ASSIGNED PI`, PT+BR) — `RIPE-NCC-END-MNT` + `IGBZU-mnt` (do utilizador); geofeed e prefixlen nossos. ✔ ROA (AS213367, maxLength 48) e route6 (`mnt-by: IGBZU-mnt`) criados pelo utilizador em 2026-10-22.
 - `2a0c:9a40:e180::/48` (`ASSIGNED`, PT+BR) — iFog (`ch-ifog-1-mnt`) + `IGBZU-mnt`; geofeed e prefixlen nossos. ✔
 - `2a0f:6280:1f00::/40` (`ALLOCATED-BY-LIR`) + `/41` PT e `/41` BR (`ASSIGNED`) — HYEHOST-MNT; geofeed e prefixlen nossos nos três. ✔
-- `2a0f:6280:1057::/48` (`ASSIGNED`, PT) — HYEHOST-MNT; geofeed e prefixlen nossos. ✔
+- `2a0f:6280:1057::/48` (`ASSIGNED`, PT) — HYEHOST-MNT; geofeed e prefixlen nossos. ✔ `country:` só PT porque o painel da HYEHOST não aceita mais de um país — aceite, ignorar o aviso. rDNS delegado pela HYEHOST para a Cloudflare.
 - `2a06:b700:1003::/48` (`ASSIGNED`, PT, netname `Bissoli`, sem org) — miraliumre-mnt; **sem** geofeed nem prefixlen. **Em descontinuação**: o utilizador migrou para o `2a0c:9a40:e180::/48` (iFog); o bloco termina a **2026-12-31** (lembrete agendado para 2026-11-30). Não pedir geofeed à Miralium; retirar as linhas do geofeed/prefixlen quando deixar de ser anunciado.
 - `5.231.99.0/24` (a sair ~2026-11-10) — GHOSTnet criou 256 inetnum /32 (`.0–.127` PT, `.128–.255` BR, org `ORG-GG3-RIPE`); geofeed nosso, **sem** prefixlen.
-- `187.7.200.0/24` (`ASSIGNED PA`, PT, org já `ORG-IBZ2-RIPE`) — IPBNB-MNT; geofeed ainda da IPBNB (`api.ipbnb.com`), **sem** prefixlen; ROA (AS213367, ml24) e org já feitos; ticket **enviado** em 2026-10-22, sem resposta ainda (geofeed nosso + prefixlen, SUB-ALLOCATED PA + mnt-lower, ou 2×/25).
+- `187.7.200.0/24` (`SUB-ALLOCATED PA`, org `ORG-IBZ2-RIPE`, `mnt-by: ipbnb-mnt`, `mnt-lower: IGBZU-mnt`, abuse-c ainda `am34346` da IPBNB) + `/25` PT e `/25` BR (`ASSIGNED PA`, `mnt-by: IGBZU-mnt`, criados pelo utilizador em 2026-10-26, `abuse-c: IBN21-RIPE` → abuse@zulcao.com.br); geofeed e prefixlen nossos nos /25. ✔ ROA AS213367 ml24.
+
+## rDNS e /41 (estado 2026-10-26)
+
+| Zona reversa | Delegada por | NS Cloudflare | DNSSEC |
+|---|---|---|---|
+| `0.a.3.1.8.7.6.0.1.0.0.2.ip6.arpa` (2001:678:13a0::/48) | RIPE NCC (domain `IGBZU-mnt`) | nancy/roan | ✔ DS 2371 |
+| `0.8.1.e.0.4.a.9.c.0.a.2.ip6.arpa` (2a0c:9a40:e180::/48) | RIPE NCC (domain `IGBZU-mnt`) | nancy/roan | ✔ DS 2371 |
+| `f.1.0.8.2.6.f.0.a.2.ip6.arpa` (/40) | HYEHOST | luciane/tate | ✔ |
+| `7.5.0.1.0.8.2.6.f.0.a.2.ip6.arpa` (2a0f:6280:1057::/48) | HYEHOST | nancy/roan | ✔ |
+| `200.7.187.in-addr.arpa` | RIPE (domain `ipbnb-mnt`) | dexter/shaz | ✘ — DS fica para um ticket futuro à IPBNB |
+
+- **Validar DNS por DoH** (`https://dns.google/resolve?name=…&type=SOA`, ver `AD`): a rede local do utilizador interceta a porta 53 (respostas com `ra ad` sem `aa`, timeouts a 1.1.1.1/8.8.8.8), por isso `dig` local não é fiável para estas verificações.
+- PTR IPv6 na Cloudflare: o nome tem de completar os 32 nibbles do endereço (ex.: `2a0f:6280:1057::1` na zona do /48 → `1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0`). FCrDNS não é necessário por agora (decisão do utilizador).
+- `2a0f:6280:1f00::/40`: ROA maxLength 41 (intencional: anunciar o /40 + os dois /41, um por sítio). `route6` dos /41 já criados pela HYEHOST; /41 ainda não anunciados.
 
 ## Repositório
 

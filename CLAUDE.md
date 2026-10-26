@@ -74,7 +74,7 @@ Estado em 2026-10-26 (maintainer do utilizador: `IGBZU-mnt`; org: `ORG-IBZ2-RIPE
 
 - **Validar DNS por DoH** (`https://dns.google/resolve?name=…&type=SOA`, ver `AD`): a rede local do utilizador interceta a porta 53 (respostas com `ra ad` sem `aa`, timeouts a 1.1.1.1/8.8.8.8), por isso `dig` local não é fiável para estas verificações.
 - PTR IPv6 na Cloudflare: o nome tem de completar os 32 nibbles do endereço (ex.: `2a0f:6280:1057::1` na zona do /48 → `1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0`). FCrDNS não é necessário por agora (decisão do utilizador).
-- `2a0f:6280:1f00::/40`: ROA maxLength 41 (intencional: anunciar o /40 + os dois /41, um por sítio). `route6` dos /41 já criados pela HYEHOST; /41 ainda não anunciados.
+- `2a0f:6280:1f00::/40`: ROA maxLength 41 (intencional). /40 + os dois /41 **anunciados** desde 2026-10-26 a partir do OPNsense (FRR), RPKI valid, `route6` dos /41 criados pela HYEHOST. Prefix-list de saída `PL-OUT-V6`: `permit 2a0f:6280:1f00::/40 le 41` (no FRR o `ge` tem de ser > comprimento). O FRR tem `bgp network import-check`: cada `network` precisa de rota na RIB → âncoras blackhole (gateway **Null6** em System → Routes do OPNsense, não no vtysh) para o /40 e para cada /41. Quando o sítio BR tiver router próprio, o `/41` BR (`2a0f:6280:1f80::/41`) passa a ser originado lá e sai deste router.
 
 ## Repositório
 
